@@ -34,7 +34,8 @@ My assigned part:   ______________________   (Part 1, 2, 3 or 4 — see "Team sp
   1. draws the graph (8 nodes labelled A–H, 13 weighted edges)
   2. lets the user pick a **source** and a **target** node
   3. has a **Run Dijkstra** button and a **Run BFS** button
-  4. animates the algorithm's steps on the graph (nodes and edges light up as it explores)
+  4. animates the algorithm's steps on the graph (nodes and edges light up as it explores).
+     The user can also go one step forward or **one step back** at a time, to explain each step.
   5. highlights the final shortest path
   6. shows the result: the path (e.g. `A → C → E → G → H`), its total distance, its number
      of edges, and the statistics the backend returns
@@ -146,6 +147,7 @@ The page structure and all the CSS. `index.html` must contain these elements wit
 | `run-bfs`        | `<button>` | run BFS |
 | `play`           | `<button>` | play / resume the animation |
 | `pause`          | `<button>` | pause |
+| `prev`           | `<button>` | go back one step |
 | `step`           | `<button>` | advance one step |
 | `reset`          | `<button>` | reset the animation |
 | `speed`          | `<input type="range">` | delay between steps in ms (min 50, max 1500, default 500) |
@@ -211,11 +213,19 @@ Animator.load(result)          // stop any playback, GraphView.reset(), set dist
 Animator.play()
 Animator.pause()
 Animator.stepForward()         // play exactly one step
+Animator.stepBack()            // pause, then undo exactly one step (does nothing before the first step)
 Animator.reset()               // back to before the first step (same as load again)
 Animator.setSpeed(ms)          // delay between steps while playing
 Animator.onStep(callback)      // callback(step, index, total) after each step is applied
 Animator.onFinish(callback)    // callback(result) after the last step
+Animator.onBack(callback)      // callback(step, index, total) after stepBack; `step` is the step that is
+                               // now the latest applied one (null if back at the start)
 ```
+
+How to implement `stepBack`: don't write undo logic for each step type. Instead, reset the
+graph exactly like `load` does, then immediately re-apply steps `0 .. index-2` with no delay
+and without calling the `onStep` callbacks, then call the `onBack` callbacks. The demo has only
+about 40 steps, so this is instant. After going back, `stepForward` and `play` continue from there.
 
 Map each step type to visuals:
 
@@ -260,9 +270,12 @@ async function runAlgorithm(name, source, target)    // name: "dijkstra" | "bfs"
 2. Clicking a node sets the source, and shift-clicking sets the target. Keep the selects
    in sync.
 3. The Run buttons call `runAlgorithm`, then `Animator.load(result)` and `Animator.play()`.
-4. The play/pause/step/reset buttons and the speed slider call the matching `Animator`
-   functions.
+4. The play/pause/prev/step/reset buttons and the speed slider call the matching `Animator`
+   functions (`prev` calls `Animator.stepBack()`).
 5. `Animator.onStep`: show the step's `message` in `#step-message` and append it to `#step-log`.
+   `Animator.onBack`: remove the last item from `#step-log` and show the given step's `message`
+   in `#step-message` (or clear it if `step` is null). If a result box was filled because the
+   animation had finished, leave it as it is.
 6. `Animator.onFinish`: show the result in `#result-dijkstra` or `#result-bfs`. That's the
    path as labels joined with `→`, the distance, the hops and the `stats` fields (with
    readable names). If `found` is false, say "No path".
