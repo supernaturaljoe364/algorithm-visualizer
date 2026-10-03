@@ -6,8 +6,8 @@ JavaScript frontend (`frontend/`, owned by the frontend team).
 **This file is the source of truth.** If the backend output ever disagrees with this
 file, tell Dane. Only Dane edits this file.
 
-> Status: contract defined; the HTTP server is still being built. Until it is ready,
-> the frontend should use the sample responses below as mock data.
+> Status: the backend is implemented. The sample responses below are real server output
+> (only `timeMicroseconds` varies between runs), so they are safe to use as mock data.
 
 ---
 
