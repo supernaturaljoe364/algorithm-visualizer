@@ -1,0 +1,64 @@
+:root {
+  --ink: #1b2430; --muted: #5b6776; --bg: #f3f5f8; --card: #fff; --line: #cdd5df;
+  /* colour-blind-friendly palette (Okabe-Ito) */
+  --frontier: #f0e442; --current: #e69f00; --visited: #56b4e9; --path: #009e73;
+  --relaxed: #0072b2; --source: #1b2430; --target: #cc79a7;
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 16px 24px; background: var(--bg); color: var(--ink);
+  font: 15px/1.45 system-ui, "Segoe UI", Roboto, sans-serif; }
+header h1 { margin: 0; font-size: 1.6rem; }
+header p { margin: 2px 0 12px; color: var(--muted); }
+h2 { margin: 0 0 6px; font-size: 1rem; }
+h3 { margin: 0 0 6px; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 12px; }
+main { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 12px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 4px 0; }
+button, select { font: inherit; padding: 5px 12px; border: 1px solid var(--line); border-radius: 6px; background: #fff; cursor: pointer; }
+button:hover { background: #eef2f6; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--relaxed); outline-offset: 2px; }
+button.primary { background: var(--relaxed); border-color: var(--relaxed); color: #fff; }
+button.primary.alt { background: #8a3b00; border-color: #8a3b00; }
+#error { background: #fde8e8; border: 1px solid #c0392b; color: #7b1d12; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; }
+#error[hidden] { display: none; }
+
+#graph { width: 100%; max-height: 62vh; background: #fafbfc; border: 1px solid var(--line); border-radius: 6px; margin: 6px 0; }
+.edge { stroke: #98a4b3; stroke-width: 3; transition: stroke .2s; }
+.edge[data-state="examining"] { stroke: var(--current); stroke-width: 6; }
+.edge[data-state="relaxed"] { stroke: var(--relaxed); stroke-width: 5; }
+.edge[data-state="path"] { stroke: var(--path); stroke-width: 8; }
+.edge-weight { font-size: 15px; font-weight: 600; text-anchor: middle; dominant-baseline: central;
+  fill: var(--ink); stroke: #fafbfc; stroke-width: 5px; paint-order: stroke; }
+
+.node { cursor: pointer; }
+.node circle { fill: #fff; stroke: #5b6776; stroke-width: 3; transition: fill .2s; }
+.node[data-state="frontier"] circle { fill: var(--frontier); }
+.node[data-state="current"] circle { fill: var(--current); }
+.node[data-state="visited"] circle { fill: var(--visited); }
+.node[data-state="path"] circle { fill: var(--path); }
+.node[data-role="source"] circle { stroke: var(--source); stroke-width: 6; }
+.node[data-role="target"] circle { stroke: var(--target); stroke-width: 6; stroke-dasharray: 7 4; }
+.node-label { font-size: 18px; font-weight: 700; text-anchor: middle; pointer-events: none; fill: var(--ink); }
+.distance-label { font-size: 15px; font-weight: 700; text-anchor: middle; pointer-events: none; fill: var(--ink);
+  stroke: #fafbfc; stroke-width: 4px; paint-order: stroke; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; list-style: none; padding: 0; margin: 6px 0; font-size: .85rem; }
+.sw { display: inline-block; width: 14px; height: 14px; border-radius: 50%; margin-right: 5px; vertical-align: -2px; border: 3px solid #5b6776; background: #fff; }
+.s-frontier { background: var(--frontier); } .s-current { background: var(--current); }
+.s-visited { background: var(--visited); } .s-path { background: var(--path); }
+.s-source { border-color: var(--source); } .s-target { border-color: var(--target); border-style: dashed; }
+.hint { color: var(--muted); font-size: .85rem; margin: 4px 0 0; }
+
+.log-panel { display: flex; flex-direction: column; min-height: 0; }
+#step-message { min-height: 3em; padding: 8px; background: #fff7e0; border-left: 4px solid var(--current); border-radius: 4px; margin-bottom: 12px; font-weight: 600; }
+#step-log { margin: 0; padding-left: 24px; overflow-y: auto; max-height: 48vh; font-size: .88rem; color: var(--muted); }
+
+.results { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.result .path { font-size: 1.25rem; font-weight: 700; margin: 4px 0; }
+.result .empty { color: var(--muted); margin: 0; }
+.result table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+.result td { padding: 2px 0; border-top: 1px solid #e6eaef; }
+.result td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 800px) { main, .results { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .edge, .node circle { transition: none; } }

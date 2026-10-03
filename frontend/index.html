@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dijkstra vs BFS Visualizer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Dijkstra vs BFS</h1>
+    <p>BFS finds the path with the fewest edges. Dijkstra finds the path with the lowest total weight.</p>
+  </header>
+
+  <div id="error" role="alert" hidden></div>
+
+  <main>
+    <section class="panel graph-panel">
+      <div class="controls">
+        <label>Source <select id="source-select"></select></label>
+        <label>Target <select id="target-select"></select></label>
+        <button id="run-dijkstra" class="primary">Run Dijkstra</button>
+        <button id="run-bfs" class="primary alt">Run BFS</button>
+      </div>
+      <svg id="graph" role="img" aria-label="Graph"></svg>
+      <div class="controls">
+        <button id="prev">Back</button>
+        <button id="play">Play</button>
+        <button id="pause">Pause</button>
+        <button id="step">Step</button>
+        <button id="reset">Reset</button>
+        <label>Delay <input id="speed" type="range" min="50" max="1500" step="50" value="500">
+          <span id="speed-value">500 ms</span></label>
+      </div>
+      <ul class="legend">
+        <li><i class="sw s-default"></i>Unvisited</li>
+        <li><i class="sw s-frontier"></i>Found, waiting</li>
+        <li><i class="sw s-current"></i>Current</li>
+        <li><i class="sw s-visited"></i>Visited</li>
+        <li><i class="sw s-path"></i>Shortest path</li>
+        <li><i class="sw s-source"></i>Source (solid ring)</li>
+        <li><i class="sw s-target"></i>Target (dashed ring)</li>
+      </ul>
+      <p class="hint">Click a node to set the source. Shift-click to set the target. Numbers above nodes are distances so far.</p>
+    </section>
+
+    <section class="panel log-panel">
+      <h2>Current step</h2>
+      <div id="step-message" aria-live="polite"></div>
+      <h2>Steps so far</h2>
+      <ol id="step-log"></ol>
+    </section>
+  </main>
+
+  <section class="results">
+    <div id="result-dijkstra" class="panel result"><p class="empty">Run Dijkstra to see its result.</p></div>
+    <div id="result-bfs" class="panel result"><p class="empty">Run BFS to see its result.</p></div>
+  </section>
+
+  <script src="js/mock-data.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/graph-view.js"></script>
+  <script src="js/animation.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
